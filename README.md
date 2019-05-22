@@ -14,8 +14,8 @@
 ![](Images/ArduinoSch.png)
 1. Attach the 4 LED's to the front of the robot
 1. Remove the front skid and attach a third wheel to the rear of the SumoBot with the meccano
-    1. Use some ballast to adjust the centre of mass, in order to rest on this wheel
+    1. Use some ballast to adjust the centre of mass so as to rest on this wheel
     ![](Images/WilliamSide.jpg)
 1. Create a camera mount from the meccano and attach the camera to the top of the SumoBot.
 ![](Images/Camera_Mount.jpg)
-1. Attach a bright object to the top of the robot to track the position.
+1. Attach a bright object to the top of the robot in order to track the position.
