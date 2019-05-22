@@ -11,7 +11,11 @@
 1. Remove circuitry from the top of the SumoBot
 1. Attach the project box the SumoBot frame
 1. Connect the Arduino up as per the circuit diagram using stripboard
+![](Images/ArduinoSch.png)
 1. Attach the 4 LED's to the front of the robot
 1. Remove the front skid and attach a third wheel to the rear of the SumoBot with the meccano
     1. Use some ballast to adjust the centre of mass, in order to rest on this wheel
+    ![](Images/WilliamSide.jpg)
 1. Create a camera mount from the meccano and attach the camera to the top of the SumoBot.
+![](Images/Camera_Mount.jpg)
+1. Attach a bright object to the top of the robot to track the position.
