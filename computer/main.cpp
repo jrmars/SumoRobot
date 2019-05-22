@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <string> 
+#include <iostream>
 
 /*!
  \file      Example1.cpp
@@ -38,7 +39,7 @@ int main()
 {
 	serialib LS;                                                            // Object of the serialib class
 	int Ret; // Used for return values
-	char Buffer[32];
+	int16_t Buffer[32];
 	char in[32];
 	// Open serial port
 
@@ -51,23 +52,21 @@ int main()
 	// Write the AT command on the serial port
 	printf("Sending data!\n");
 	float test = -1;
-	while (test <= 1) {
-		sprintf(Buffer, "%f", test);
-		printf("Data sent: %s         ", Buffer);
-		Ret = LS.WriteString(Buffer);
-		Ret = LS.ReadString(in, '>', 1000);                                // Read a maximum of 128 characters with a timeout of 5 seconds
-																		   // The final character of the string must be a line feed ('\n')
-		if (Ret > 0) {                                                             // If a string has been read from, print the string
-			float received = atof(in);
-			printf("Error In  : %f \n", received);
-		}
-		else {
-			printf("TimeOut reached. No data received !\n");
-		}
-		Sleep(500);
-		test += 0.05;
 		
-	}
+		printf("Data sent: %s         ", Buffer);
+		int16_t rndError = 42;
+		Ret = LS.Write(&rndError, sizeof(rndError));
+		int8_t deltaSensor = 0;
+		while (true) {
+			Ret = LS.Read(&deltaSensor, sizeof(deltaSensor));                                // Read a maximum of 128 characters with a timeout of 5 seconds
+																			   // The final character of the string must be a line feed ('\n')
+			if (Ret > 0) {                                                             // If a string has been read from, print the string
+				std::cout << "deltasensor is " << (int)deltaSensor << std::endl;
+			}
+			else {
+				printf("TimeOut reached. No data received !\n");
+			}
+		}
 	
 	/*if (Ret != 1) {                                                           // If the writting operation failed ...
 		printf("Error while writing data\n");                              // ... display a message ...

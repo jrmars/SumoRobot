@@ -4,27 +4,32 @@ Servo servoLeft;
 Servo servoRight;
 
 bool computer = true;
-bool sensors = false;
+bool onlysensors = false;
 
 float ErrorIn = 0.00; // Error from sensors
+float ErrorOut = 0.00;
 float sensorLeft = 0;
 float sensorRight = 0;
-int motorStop = 1500; // Motor stop uS
-int motorSpeed = 100; // Constant fwd speed
+int motorStopL = 1500; // Motor stop uS
+int motorStopR = 1520; // Motor stop uS
+int motorSpeed = 50; // Constant fwd speed
 int errorMulti = 100; // Error multiplier
-int speedLeft = motorStop + motorSpeed; // Left constant speed
-int speedRight = motorStop - motorSpeed; // Right constant speed
+int speedLeft = motorStopL + motorSpeed; // Left constant speed
+int speedRight = motorStopR - motorSpeed; // Right constant speed
 String received;
 
 char Buffer[32];
 int myTimeout = 50;
 void setup() {
 	pinMode(LED_BUILTIN, OUTPUT);
-	Serial.begin(9600); // opens serial port, sets data rate to 9600 bps
+	Serial.begin(115200); // opens serial port, sets data rate to 115200 bps
 	Serial.setTimeout(myTimeout);
-	Serial.print("Arduino is ready \n");
-	servoLeft.attach(6);
-	servoRight.attach(9);
+	//Serial.print("Arduino is ready \n");
+	servoLeft.attach(9);
+	servoRight.attach(6);
+
+	servoLeft.writeMicroseconds(speedLeft);
+	servoRight.writeMicroseconds(speedRight);
 	}
 
 void lineSensors() {
@@ -38,29 +43,36 @@ void lineSensors() {
 	delay(1); // Discharge capacitor
 } 
 
+
+int prevError = 0;
+
 void loop() {
+	//delay(100);
+	//lineSensors();
+	//sensorLeft = digitalRead(A1); // Read sensor values (1,black 0,white)
+	//sensorRight = digitalRead(A5);
 
-	if(Serial.available() > 0) {
+   // int8_t deltaError = sensorLeft - sensorRight;
+  int8_t deltaError = 0;
+	Serial.write((uint8_t *)&deltaError, sizeof(deltaError));
 
-		received = Serial.readString();// read the incoming data as string
-		if (computer == true) {
-			ErrorIn = received.toFloat();
-			servoLeft.writeMicroseconds(speedLeft + errorMulti * ErrorIn);
-			servoRight.writeMicroseconds(speedRight + errorMulti * ErrorIn);
-			strcpy(Buffer, "");
-			dtostrf((ErrorIn), 2, 2, &Buffer[strlen(Buffer)]);
-			strcat(Buffer, ">");
-			Serial.write(Buffer);
+	while(Serial.available() > 0) {
+		//received = Serial.readString();
+			int16_t error = 0;
+			/////// Receive and set motor speed
+			Serial.readBytes((uint8_t *)&error, sizeof(int16_t));
 			
-		}		
-	}
-	if (sensors == true) {
-		lineSensors();
-		sensorLeft = digitalRead(A1); // Read sensor values (1,black 0,white)
-	    sensorRight = digitalRead(A5);
-		ErrorIn = sensorRight - sensorLeft;
-		servoLeft.writeMicroseconds(speedLeft + errorMulti * ErrorIn);
-		servoRight.writeMicroseconds(speedRight + errorMulti * ErrorIn);
+		/*	if (error == 50) {
+				digitalWrite(LED_BUILTIN, HIGH);
+				delay(100);
+				digitalWrite(LED_BUILTIN, LOW);
+			}*/
+
+			if (prevError != error) {
+				servoLeft.writeMicroseconds(speedLeft + error);
+				servoRight.writeMicroseconds(speedRight + error);
+				prevError = error;
+			}
 	}
 }
 
