@@ -1,5 +1,5 @@
 # Instructions
-The code used on the Arduino for controlling the robot can be found above as SumoBot_Sketch.ino
+The code used on the Arduino for controlling the robot can be found above as sumobot_sketch.ino
 ## Items Needed
 1. [Parallax SumoBot](https://www.parallax.com/product/27402)
 1. [Arduino Nano](https://store.arduino.cc/arduino-nano)
